@@ -45,6 +45,64 @@ Unity 6로 제작한 소규모 2D 탑다운 자동 전투 프로토타입입니�
   - Config, Factory, Bootstrap 책임 분리
   - 향후 소대 타입, 스킬, 투사체 풀링 추가 가능
 
+## Config, Factory, Bootstrap 책임
+
+게임 초기화 코드를 하나의 클래스에 집중시키지 않고 설정, 생성, 실행 시점이라는 세 가지 책임으로 나눴습니다.
+
+```text
+GameScene 로드
+    ↓
+GamePrototypeBootstrap
+    ↓ 설정 자산 로드
+GamePrototypeConfig
+    ↓ 설정 전달
+GamePrototypeFactory
+    ↓
+Model · View · Controller 생성 및 연결
+```
+
+### GamePrototypeConfig — 무엇을 만들 것인가
+
+`GamePrototypeConfig`는 전투를 구성하는 밸런스와 표현 데이터를 보관하는 `ScriptableObject`입니다.
+
+- 팀당 소대 수
+- 체력과 기본 공격력
+- 이동속도, 공격 사거리, 공격 간격
+- 이동 가능한 전장 범위
+- 플레이어와 적의 표시 색상
+
+외부에는 읽기 전용 프로퍼티만 제공하여 실행 중 설정이 임의로 변경되는 것을 막습니다. Inspector에서 값을 조정할 수 있으므로 밸런스를 변경하기 위해 게임 생성 코드를 수정할 필요가 없습니다. `OnValidate()`는 잘못된 음수나 0이 입력되더라도 Factory가 유효한 값을 받도록 보정합니다.
+
+### GamePrototypeFactory — 어떻게 만들 것인가
+
+`GamePrototypeFactory`는 Config를 전달받아 실제 런타임 게임 오브젝트를 생성하고 의존성을 연결합니다.
+
+- 카메라, 전장과 EventSystem 구성
+- `CombatantRegistry`와 입력 구현체 생성
+- 플레이어 및 적 전투원 생성
+- 전투원의 Model, View, Controller 연결
+- HUD와 `GameFlowController` 생성
+
+유닛 생성 과정에서는 먼저 `CombatantModel`을 만들고, `CombatantView`를 생성한 다음, `CombatantController`가 양쪽과 전투 서비스를 연결합니다. 이 생성 규칙을 Factory에 모아 두어 프리팹이나 오브젝트 풀을 도입하더라도 Bootstrap과 전투 로직을 변경하지 않도록 했습니다.
+
+### GamePrototypeBootstrap — 언제 만들 것인가
+
+`GamePrototypeBootstrap`은 게임 초기화가 실행될 시점을 결정하는 Composition Root입니다.
+
+- 첫 Scene이 로드되기 전에 `sceneLoaded` 이벤트 등록
+- 로드된 Scene이 `GameScene`인지 확인
+- `GamePrototypeConfig` 자산 로드
+- Config를 전달하여 `GamePrototypeFactory.Build()` 실행
+- Retry 요청 시 `GameScene` 재로드
+
+Bootstrap은 밸런스 수치나 유닛 생성 방법을 알지 않습니다. Scene 진입을 감지하고 최상위 의존성을 연결하는 일만 담당하므로 초기화 시점이 바뀌어도 Config와 Factory에 영향을 주지 않습니다.
+
+| 변경 내용 | 담당 위치 |
+|---|---|
+| 체력, 공격력, 색상 조정 | `GamePrototypeConfig` |
+| 유닛이나 HUD 생성 방식 변경 | `GamePrototypeFactory` |
+| 게임 초기화 및 Scene 진입 시점 변경 | `GamePrototypeBootstrap` |
+
 ## 주요 코드
 
 ```text
@@ -80,15 +138,3 @@ Assets/Script/Game/
 초기 프로토타입에서는 기능을 큰 클래스 하나에 구현하지 않고 이동, 탐색, 공격, 체력과 상태 전이를 작은 단위로 먼저 분리했습니다. 이후 `CombatantController`와 `GameFlowController`가 해당 기능을 조합하도록 구성하여 기능 추가와 교체가 기존 코드에 미치는 영향을 줄였습니다.
 
 `GamePrototypeFactory`는 Model, View, Controller 생성과 의존성 연결을 담당합니다. 밸런스 값은 `GamePrototypeConfig`에 격리하여 코드 수정 없이 조정할 수 있습니다.
-
-## 현재 범위와 향후 개선
-
-현재 버전은 포트폴리오용 핵심 전투 루프에 집중합니다.
-
-- 소대별 고유 역할과 능력
-- 유닛 간 겹침 방지 및 진형 유지
-- 투사체와 VFX 오브젝트 풀링
-- EditMode/PlayMode 자동 테스트
-- Windows 독립 실행 빌드와 프로파일링 결과
-
-위 항목은 다음 확장 단계로 남겨 두었습니다.
