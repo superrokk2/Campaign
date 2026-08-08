@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 21aad1f8f850c2e4dbda0c4fbe2ce7e7, type: 3}
+  m_Name: GamePrototypeConfig
+  m_EditorClassIdentifier: Assembly-CSharp::Campaign.Game.GamePrototypeConfig
+  squadsPerTeam: 3
+  health: 100
+  baseDamage: 14
+  baseMoveSpeed: 1.8
+  attackRange: 1.25
+  baseAttackInterval: 0.75
+  movementBounds:
+    serializedVersion: 2
+    x: -7.6
+    y: -3.8
+    width: 15.2
+    height: 7.6
+  playerColor: {r: 0.15, g: 0.75, b: 0.95, a: 1}
+  enemyColor: {r: 0.95, g: 0.28, b: 0.3, a: 1}
