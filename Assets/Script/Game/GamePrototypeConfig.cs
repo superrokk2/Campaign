@@ -3,8 +3,8 @@ using UnityEngine;
 namespace Campaign.Game
 {
     /// <summary>
-    /// 프로토타입의 밸런스와 표현 값을 보관하는 ScriptableObject 설정 자산.
-    /// 코드 재컴파일 없이 Inspector에서 수치를 조정하고 여러 설정 프리셋을 만들 수 있다.
+    /// 프로토타입의 밸런스와 표현 값을 보관하는 ScriptableObject 설정 자산입니다.
+    /// 코드 재컴파일 없이 Inspector에서 수치를 조정하고 여러 설정 프리셋을 만들 수 있습니다.
     /// </summary>
     [CreateAssetMenu(
         fileName = "GamePrototypeConfig",
@@ -31,7 +31,7 @@ namespace Campaign.Game
         [SerializeField] Color playerColor = new(0.15f, 0.75f, 0.95f);
         [SerializeField] Color enemyColor = new(0.95f, 0.28f, 0.3f);
 
-        // 외부 시스템에는 읽기 전용 프로퍼티만 공개해 런타임 중 설정 변조를 막는다.
+        // 외부 시스템에는 읽기 전용 프로퍼티만 공개해 런타임 중 설정 변조를 막습니다.
         public int SquadsPerTeam => squadsPerTeam;
         public int Health => health;
         public int BaseDamage => baseDamage;
@@ -43,8 +43,8 @@ namespace Campaign.Game
         public Color EnemyColor => enemyColor;
 
         /// <summary>
-        /// Resources/GamePrototypeConfig.asset을 로드한다.
-        /// 자산을 아직 만들지 않은 초기 상태에서는 기본 직렬화 값을 가진 임시 인스턴스를 반환한다.
+        /// Resources/GamePrototypeConfig.asset을 로드합니다.
+        /// 자산을 아직 만들지 않은 초기 상태에서는 기본 직렬화 값을 가진 임시 인스턴스를 반환합니다.
         /// </summary>
         public static GamePrototypeConfig LoadOrCreateDefault()
         {
@@ -55,15 +55,15 @@ namespace Campaign.Game
             fallback.name = "RuntimeDefaultGamePrototypeConfig";
             fallback.hideFlags = HideFlags.HideAndDontSave;
             Debug.LogWarning(
-                "GamePrototypeConfig asset was not found at Resources/GamePrototypeConfig. " +
-                "Using runtime defaults. Create one via Assets > Create > Campaign > Game Prototype Config.");
+                "Resources/GamePrototypeConfig 에 GamePrototypeConfig 자산이 없습니다. " +
+                "런타임 기본값을 사용합니다. Assets > Create > Campaign > Game Prototype Config를 통해 생성해주세요.");
             return fallback;
         }
 
 #if UNITY_EDITOR
         void OnValidate()
         {
-            // YAML을 직접 편집하거나 다중 선택을 사용할 때도 GamePrototypeFactory가 항상 유효한 값을 받게 한다.
+            // YAML을 직접 편집하거나 다중 선택을 사용할 때도 GamePrototypeFactory가 항상 유효한 값을 받게 합니다.
             squadsPerTeam = Mathf.Max(1, squadsPerTeam);
             health = Mathf.Max(1, health);
             baseDamage = Mathf.Max(1, baseDamage);

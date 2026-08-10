@@ -4,7 +4,7 @@ namespace Campaign.Game.View
 {
     /// <summary>
     /// 전투원의 시각 표현만 담당하는 MVC View.
-    /// 체력 계산과 사망 판정은 Model에 두고 이 클래스는 전달받은 결과만 표시한다.
+    /// 체력 계산과 사망 판정은 Model에 두고 이 클래스는 전달받은 결과만 표시합니다.
     /// </summary>
     public sealed class CombatantView : MonoBehaviour
     {
@@ -49,7 +49,7 @@ namespace Campaign.Game.View
 
         public void FlashHit()
         {
-            // 별도 코루틴 할당 없이 TickVisual 보간으로 짧은 피격 피드백을 만든다.
+            // 별도 코루틴 할당 없이 TickVisual 보간으로 짧은 피격 피드백을 만듭니다.
             if (body != null) body.color = Color.Lerp(body.color, Color.white, 0.55f);
             transform.localScale = originalScale * 1.12f;
         }

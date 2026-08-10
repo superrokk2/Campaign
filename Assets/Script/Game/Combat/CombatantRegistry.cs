@@ -6,14 +6,14 @@ using UnityEngine;
 namespace Campaign.Game.Combat
 {
     /// <summary>
-    /// 활성 전투원을 팀별로 보관하는 레지스트리.
-    /// Find 계열 API 대신 캐시된 목록을 순회하여 검색 비용과 GC를 줄인다.
-    /// 현재 소규모 전투에서는 선형 탐색이 가장 단순하고 충분히 빠르다.
+    /// 활성 전투원을 팀별로 보관하는 레지스트리입니다.
+    /// Find 계열 API 대신 캐시된 목록을 순회하여 검색 비용과 GC를 줄입니다.
+    /// 현재 소규모 전투에서는 선형 탐색이 가장 단순하고 충분히 빠릅니다.
     /// </summary>
     public sealed class CombatantRegistry
     {
-        readonly List<CombatantController> player = new(8);
-        readonly List<CombatantController> enemy = new(8);
+        readonly List<CombatantController> player = new(3);
+        readonly List<CombatantController> enemy = new(3);
 
         public IReadOnlyList<CombatantController> Player => player;
         public IReadOnlyList<CombatantController> Enemy => enemy;
@@ -22,7 +22,7 @@ namespace Campaign.Game.Combat
 
         public void Register(CombatantController unit)
         {
-            // Initialize가 실수로 중복 호출돼도 생존 수가 오염되지 않게 한다.
+            // Initialize가 실수로 중복 호출돼도 생존 수가 오염되지 않게 합니다.
             var list = ListFor(unit.Model.Team);
             if (!list.Contains(unit)) list.Add(unit);
         }
@@ -38,7 +38,7 @@ namespace Campaign.Game.Combat
                 var candidate = candidates[i];
                 if (!candidate.IsAlive) continue;
                 
-                // 실제 거리는 필요하지 않으므로 sqrt가 없는 제곱 거리로 비교한다.
+                // 실제 거리는 필요하지 않으므로 sqrt가 없는 제곱 거리로 비교합니다.
                 var sqr = (candidate.Position - origin).sqrMagnitude;
                 if (sqr >= closestSqr) continue;
                 closestSqr = sqr;

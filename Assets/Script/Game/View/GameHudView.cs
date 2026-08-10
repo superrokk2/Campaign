@@ -6,7 +6,7 @@ namespace Campaign.Game.View
 {
     /// <summary>
     /// HUD 생성과 표시만 담당하는 View. 마지막 값을 캐시해 같은 Text 할당과
-    /// 불필요한 Canvas rebuild를 방지한다.
+    /// 불필요한 Canvas rebuild를 방지합니다.
     /// </summary>
     public sealed class GameHudView : MonoBehaviour
     {
@@ -37,7 +37,7 @@ namespace Campaign.Game.View
 
         public void Render(string phase, string status, string action, bool showAction)
         {
-            // Unity UI의 Text 변경은 Canvas 갱신으로 이어지므로 값이 달라질 때만 쓴다.
+            // Unity UI의 Text 변경은 Canvas 갱신으로 이어지므로 값이 달라질 때만 적용합니다.
             if (cachedPhase != phase) { cachedPhase = phase; phaseText.text = phase; }
             if (cachedStatus != status) { cachedStatus = status; statusText.text = status; }
             if (cachedAction != action) { cachedAction = action; actionLabel.text = action; }

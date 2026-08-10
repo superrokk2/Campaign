@@ -8,12 +8,12 @@ using UnityEngine;
 namespace Campaign.Game.Controller
 {
     /// <summary>
-    /// 전투의 MVC Controller이자 State들의 Context.
-    /// 상태별 시간과 전이 규칙은 State가 소유하고, 이 클래스는 유닛 Tick과 View API를 제공한다.
+    /// 전투의 MVC Controller이자 State들의 Context입니다.
+    /// 상태별 시간과 전이 규칙은 State가 소유하고, 이 클래스는 유닛 Tick과 View API를 제공합니다.
     /// </summary>
     public sealed class GameFlowController : MonoBehaviour
     {
-        readonly List<CombatantController> units = new(8);
+        readonly List<CombatantController> units = new(6);
         CombatantRegistry registry;
         GameHudView hud;
         IBattleState currentState;
@@ -30,12 +30,13 @@ namespace Campaign.Game.Controller
             hud = hudView;
             inputSource = playerInputSource;
             for (var i = 0; i < combatants.Count; i++) units.Add(combatants[i]);
+            // HUD 액션 이벤트를 구독한 뒤 최초 상태를 활성화할 준비를 합니다.
             hud.ActionPressed += HandleAction;
-            // 모든 의존성 연결이 끝난 뒤 최초 상태에 진입한다.
+            // 모든 의존성 연결이 끝난 뒤 최초 상태에 진입합니다.
             ChangeState(new PrepareState(this));
         }
 
-        // 전투 전체의 Update 진입점을 하나로 유지해 상태와 유닛 실행 순서를 통제한다.
+        // 전투 전체의 Update 진입점을 하나로 유지해 상태와 유닛 실행 순서를 통제합니다.
         void Update() => currentState?.Tick(Time.deltaTime);
 
         public void ShowPrepare()
@@ -51,7 +52,7 @@ namespace Campaign.Game.Controller
 
         public void TickCombat(float deltaTime)
         {
-            // 입력을 인터페이스 뒤에 숨겨 자동 테스트와 플랫폼 확장을 쉽게 한다.
+            // 입력을 인터페이스 뒤에 숨겨 자동 테스트와 플랫폼 확장을 쉽게 합니다.
             var input = inputSource.ReadMovement();
             for (var i = 0; i < units.Count; i++) units[i].BattleTick(deltaTime, input);
         }
@@ -78,7 +79,7 @@ namespace Campaign.Game.Controller
 
         void ChangeState(IBattleState next)
         {
-            // Exit -> 교체 -> Enter 순서를 보장해 상태별 자원 정리 시점을 명확히 한다.
+            // Exit -> 교체 -> Enter 순서를 보장해 상태별 자원 정리 시점을 명확히 합니다.
             currentState?.Exit();
             currentState = next;
             currentState.Enter();
